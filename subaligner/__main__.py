@@ -11,6 +11,8 @@ Subaligner command line interface
 
 optional arguments:
   -h, --help            show this help message and exit
+  -c AUDIO_CHANNEL, --channel AUDIO_CHANNEL
+                        Audio channel to extract from video file
   -s SUBTITLE_PATH [SUBTITLE_PATH ...], --subtitle_path SUBTITLE_PATH [SUBTITLE_PATH ...]
                         File path or URL to the subtitle file (Extensions of supported subtitles: .ttml, .ssa, .stl, .sbv, .dfxp, .srt, .txt, .ytt, .vtt, .sub, .sami, .xml, .scc, .ass, .smi, .tmp) or selector for the embedded subtitle (e.g., embedded:page_num=888 or embedded:stream_index=0)
   -l MAX_LOGLOSS, --max_logloss MAX_LOGLOSS
@@ -87,6 +89,13 @@ def main():
         help="File path or URL to the video file",
     )
     from subaligner.subtitle import Subtitle
+    parser.add_argument(
+        "-c",
+        "--channel",
+        type=str,
+        default="0",
+        help="Audio channel number to extract",
+    )
     parser.add_argument(
         "-s",
         "--subtitle_path",
@@ -303,7 +312,8 @@ def main():
                     aligned_subs, audio_file_path, voice_probabilities, frame_rate = predictor.predict_single_pass(
                         video_file_path=local_video_path,
                         subtitle_file_path=local_subtitle_path,
-                        weights_dir=os.path.join(FLAGS.training_output_directory, "models", "training", "weights")
+                        weights_dir=os.path.join(FLAGS.training_output_directory, "models", "training", "weights"),
+                        channel=FLAGS.channel
                     )
                 elif FLAGS.mode == "dual":
                     aligned_subs, subs, voice_probabilities, frame_rate = predictor.predict_dual_pass(
@@ -313,6 +323,7 @@ def main():
                         stretch=stretch,
                         stretch_in_lang=stretch_in_lang,
                         exit_segfail=exit_segfail,
+                        channel=FLAGS.channel
                     )
                 elif FLAGS.mode == "script":
                     aligned_subs, _, voice_probabilities, frame_rate = predictor.predict_plain_text(
