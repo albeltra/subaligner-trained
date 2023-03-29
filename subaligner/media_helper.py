@@ -47,7 +47,7 @@ class MediaHelper(object):
     def __init__(self):
         self.__LOGGER = Logger().get_logger(__name__)
 
-    def extract_audio(self, video_file_path, decompress: bool = False, freq: int = 16000, channel=0) -> str: 
+    def extract_audio(self, video_file_path, decompress: bool = False, freq: int = 16000, channel=0) -> str:
         """Extract audio track from the video file and save it to a WAV file.
 
         Arguments:
@@ -78,7 +78,7 @@ class MediaHelper(object):
                 self.FFMPEG_BIN, Utils.double_quoted(video_file_path), freq, Utils.double_quoted(audio_file_path), channel
             )
             if decompress
-            else "{0} -y -xerror -i {1} -map 0:a:{4} -vn -acodec copy {2}".format(
+            else "{0} -y -xerror -i {1} -map 0:a:{3} -vn -acodec copy {2}".format(
                 self.FFMPEG_BIN, Utils.double_quoted(video_file_path), Utils.double_quoted(audio_file_path), channel
             )
         )
