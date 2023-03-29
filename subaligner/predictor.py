@@ -59,6 +59,7 @@ class Predictor(metaclass=Singleton):
             video_file_path: str,
             subtitle_file_path: str,
             weights_dir: str = os.path.join(os.path.dirname(__file__), "models", "training", "weights"),
+            channel:str ='0'
     ) -> Tuple[List[SubRipItem], str, Union[np.ndarray, List[float]], Optional[float]]:
         """Predict time to shift with single pass
 
@@ -76,7 +77,7 @@ class Predictor(metaclass=Singleton):
         frame_rate = None
         try:
             subs, audio_file_path, voice_probabilities = self.__predict(
-                video_file_path, subtitle_file_path, weights_file_path
+                video_file_path, subtitle_file_path, weights_file_path, channel=channel
             )
             try:
                 frame_rate = self.__media_helper.get_frame_rate(video_file_path)
@@ -97,6 +98,7 @@ class Predictor(metaclass=Singleton):
             stretch: bool = False,
             stretch_in_lang: str = "eng",
             exit_segfail: bool = False,
+            channel: str = '0'
     ) -> Tuple[List[SubRipItem], List[SubRipItem], Union[np.ndarray, List[float]], Optional[float]]:
         """Predict time to shift with single pass
 
@@ -709,7 +711,8 @@ class Predictor(metaclass=Singleton):
             max_shift_secs: Optional[float] = None,
             previous_gap: Optional[float] = None,
             lock: Optional[threading.RLock] = None,
-            network: Optional[Network] = None
+            network: Optional[Network] = None,
+            channel: str = '0'
     ) -> Tuple[List[SubRipItem], str, np.ndarray]:
         """Shift out-of-sync subtitle cues by sending the audio track of an video to the trained network.
 
@@ -736,7 +739,7 @@ class Predictor(metaclass=Singleton):
         elif video_file_path is not None:
             t = datetime.datetime.now()
             audio_file_path = self.__media_helper.extract_audio(
-                video_file_path, True, 16000
+                video_file_path, True, 16000, channel=channel
             )
             self.__LOGGER.debug(
                 "[{}] Audio extracted after {}".format(

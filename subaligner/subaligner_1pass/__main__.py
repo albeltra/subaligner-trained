@@ -12,6 +12,8 @@ optional arguments:
                         Path to the output directory containing training results
   -o OUTPUT, --output OUTPUT
                         Path to the output subtitle file
+  -c AUDIO_CHANNEL, --channel AUDIO_CHANNEL
+                        Audio channel to extract from video file
   -t TRANSLATE, --translate TRANSLATE
                         Source and target ISO 639-3 language codes separated by a comma (e.g., eng,zho)
   -lgs, --languages     Print out language codes used for stretch and translation
@@ -61,6 +63,13 @@ def main():
         type=str,
         default="",
         help="File path or URL to the subtitle file (Extensions of supported subtitles: {}) or selector for the embedded subtitle (e.g., embedded:page_num=888 or embedded:stream_index=0)".format(", ".join(Subtitle.subtitle_extensions())),
+    )
+    parser.add_argument(
+        "-c",
+        "--channel",
+        type=str,
+        default="0",
+        help="Audio channel number to extract",
     )
     parser.add_argument(
         "-l",
@@ -166,7 +175,8 @@ def main():
         subs, audio_file_path, voice_probabilities, frame_rate = predictor.predict_single_pass(
             video_file_path=local_video_path,
             subtitle_file_path=local_subtitle_path,
-            weights_dir=os.path.join(FLAGS.training_output_directory, "models", "training", "weights")
+            weights_dir=os.path.join(FLAGS.training_output_directory, "models", "training", "weights"),
+            channel=FLAGS.channel
         )
 
         aligned_subtitle_path = "_aligned.".join(
