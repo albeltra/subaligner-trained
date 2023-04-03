@@ -48,7 +48,6 @@ pydotplus==2.0.2
 pyprof2calltree==1.4.3
 pysrt==1.1.1
 pysubs2<=1.4.2
-pystack-debugger==0.8.0
 pytz==2018.4
 PyYAML>=4.2b1
 requests~=2.25.1
