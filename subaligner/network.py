@@ -497,10 +497,15 @@ class Network(object):
         hidden = BatchNormalization()(inputs)
 
         for nodes in hyperparameters.front_hidden_size:
-            hidden = Bidirectional(LSTM(nodes))(hidden) if is_bidirectional else LSTM(nodes)(hidden)
+            hidden = Conv1D(filters=nodes, kernel_size=3, activation="relu", input_shape=input_shape)(hidden)
             hidden = BatchNormalization()(hidden)
-            hidden = Activation("relu")(hidden)
             hidden = Dropout(hyperparameters.dropout)(hidden)
+
+        hidden = Reshape((-1, hidden.shape[-1] * hidden.shape[-2]))(hidden)
+        hidden = LSTM(nodes, return_sequences=True)(hidden)
+        hidden = BatchNormalization()(hidden)
+        hidden = Activation("relu")(hidden)
+        hidden = Dropout(hyperparameters.dropout)(hidden)
 
         for nodes in hyperparameters.back_hidden_size:
             hidden = Dense(nodes)(hidden)

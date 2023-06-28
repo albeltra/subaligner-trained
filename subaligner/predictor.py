@@ -779,8 +779,8 @@ class Predictor(metaclass=Singleton):
                     os.remove(audio_file_path)
                 raise
 
-        train_data = np.array([np.rot90(val) for val in train_data])
-        train_data = train_data - np.mean(train_data, axis=0)
+        # train_data = np.array([np.rot90(val) for val in train_data])
+        # train_data = train_data - np.mean(train_data, axis=0)
         result["time_load_dataset"] = str(datetime.datetime.now() - pred_start)
         result["X_shape"] = train_data.shape
 
