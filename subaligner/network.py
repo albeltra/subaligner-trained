@@ -78,7 +78,7 @@ class Network(object):
 
 
         if (hyperparameters.network_type == Network.__UNKNOWN and model_path is not None):
-            self.__model = load_model(model_path, custom_objects={"custom_loss": self.custom_loss})
+            self.__model = load_model(model_path, custom_objects={"inner_loss": self.custom_loss})
             self.__input_shape = self.__model.input_shape[1:]
         elif hyperparameters.network_type == Network.LSTM:
             self.__input_shape = input_shape
@@ -102,9 +102,9 @@ class Network(object):
         self.hyperparameters = hyperparameters
         self.__LOGGER = Logger().get_logger(__name__)
 
-    @classmethod
-    def custom_loss(cls, base_loss=tf.keras.losses.BinaryCrossentropy(), factor=0):
-        def internal_loss(y_true, y_pred):
+    @staticmethod
+    def custom_loss(base_loss=tf.keras.losses.BinaryCrossentropy(), factor=0):
+        def inner_loss(y_true, y_pred):
             b = y_pred / tf.math.reduce_sum(y_pred)
             a = y_true / tf.cast(tf.size(y_true), tf.float32)
             diff = tf.math.reduce_sum(tf.math.abs(tf.math.cumsum(
@@ -112,8 +112,8 @@ class Network(object):
             temp = base_loss(y_true, y_pred)
             loss = temp + factor * diff
             return loss
-        return internal_loss
-    @classmethod
+        return inner_loss
+
     @classmethod
     def get_network(cls, input_shape: Tuple, hyperparameters: Hyperparameters) -> "Network":
         """Factory method for creating a network.
@@ -170,7 +170,7 @@ class Network(object):
             weights_filepath {string} -- The path to the weights file.
         """
 
-        model = load_model(model_filepath, custom_objects={"custom_loss": self.custom_loss}) 
+        model = load_model(model_filepath, custom_objects={"inner_loss": cls.custom_loss}) 
         model.load_weights(weights_filepath)
         model.save(combined_filepath)
 
