@@ -78,7 +78,7 @@ class Network(object):
 
 
         if (hyperparameters.network_type == Network.__UNKNOWN and model_path is not None):
-            self.__model = load_model(model_path)
+            self.__model = load_model(model_path, custom_objects={"custom_loss": self.custom_loss})
             self.__input_shape = self.__model.input_shape[1:]
         elif hyperparameters.network_type == Network.LSTM:
             self.__input_shape = input_shape
@@ -170,7 +170,7 @@ class Network(object):
             weights_filepath {string} -- The path to the weights file.
         """
 
-        model = load_model(model_filepath)
+        model = load_model(model_filepath, custom_objects={"custom_loss": self.custom_loss}) 
         model.load_weights(weights_filepath)
         model.save(combined_filepath)
 
