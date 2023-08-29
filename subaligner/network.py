@@ -149,7 +149,16 @@ class Network(object):
             hp,
             model_path=model_path
         )
-    
+#    @classmethod
+#    def custom_loss(cls, y_true, y_pred, base_loss=tf.keras.losses.BinaryCrossentropy(), factor=0):
+#        b = y_pred / tf.math.reduce_sum(y_pred)
+#        a = y_true / tf.cast(tf.size(y_true), tf.float32)
+#        diff = tf.math.reduce_sum(tf.math.abs(
+#            tf.math.cumsum(
+#                tf.math.abs(a / tf.math.reduce_sum(tf.math.abs(a)) - b / tf.math.reduce_sum(tf.math.abs(b))))))
+#        temp = base_loss(y_true, y_pred)
+#        loss = temp + factor * diff
+#        return loss
     @classmethod
     def save_model_and_weights(
         cls, model_filepath: str, weights_filepath: str, combined_filepath: str
