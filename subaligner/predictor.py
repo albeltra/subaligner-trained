@@ -796,7 +796,7 @@ class Predictor(metaclass=Singleton):
             with lock:
                 try:
                     self.__LOGGER.debug("[{}] Start predicting...".format(os.getpid()))
-                    voice_probabilities = network.get_predictions(train_data, weights_file_path)
+                    voice_probabilities = network.get_predictions(train_data, weights_file_path)[0]
                 except Exception as e:
                     self.__LOGGER.error("[{}] Prediction failed: {}\n{}".format(os.getpid(), str(e), "".join(traceback.format_stack())))
                     traceback.print_tb(e.__traceback__)
@@ -807,7 +807,7 @@ class Predictor(metaclass=Singleton):
         else:
             try:
                 self.__LOGGER.debug("[{}] Start predicting...".format(os.getpid()))
-                voice_probabilities = network.get_predictions(train_data, weights_file_path)
+                voice_probabilities = network.get_predictions(train_data, weights_file_path)[0]
             except Exception as e:
                 self.__LOGGER.error(
                     "[{}] Prediction failed: {}\n{}".format(os.getpid(), str(e), "".join(traceback.format_stack())))
