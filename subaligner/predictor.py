@@ -858,7 +858,7 @@ class Predictor(metaclass=Singleton):
                 "Post-shift loss of {} is greater than pre-shift".format(result["loss"])
             )
 
-        elif diff < -.06:
+        elif diff > -.06: 
             raise TerminalException(
                 "Post-shift delt loss of {} does not cross the threshold for alignment".format(diff)
             )
