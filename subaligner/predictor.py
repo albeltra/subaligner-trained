@@ -781,7 +781,7 @@ class Predictor(metaclass=Singleton):
 
         # train_data = np.array([np.rot90(val) for val in train_data])
         # train_data = train_data - np.mean(train_data, axis=0)
-        train_data = train_data[np.newaxis, ...] 
+        train_data = train_data[np.newaxis, ...]
         result["time_load_dataset"] = str(datetime.datetime.now() - pred_start)
         result["X_shape"] = train_data.shape
 
@@ -803,7 +803,6 @@ class Predictor(metaclass=Singleton):
                     raise TerminalException("Prediction failed") from e
                 finally:
                     del train_data
-                    del labels
                     gc.collect()
         else:
             try:
@@ -816,7 +815,6 @@ class Predictor(metaclass=Singleton):
                 raise TerminalException("Prediction failed") from e
             finally:
                 del train_data
-                del labels
                 gc.collect()
 
         if len(voice_probabilities) <= 0:
