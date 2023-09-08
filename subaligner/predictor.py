@@ -824,6 +824,14 @@ class Predictor(metaclass=Singleton):
                 "ERROR: Audio is too short and no voice was detected"
             )
 
+        result["loss_pre_shift"] = log_loss(labels, voice_probabilities, eps=1 * 10 ** -5)
+
+        THRESH = .55
+        if result["loss_pre_shift"] < THRESH:
+            raise TerminalException(
+                "Pre-shift loss of {} is < threshold of {}".format(result["loss_pre_shift"], THRESH)
+            )
+
         result["time_predictions"] = str(datetime.datetime.now() - pred_start)
 
         original_start = FeatureEmbedder.time_to_sec(subs[0].start)
@@ -844,6 +852,16 @@ class Predictor(metaclass=Singleton):
 
         pos_to_delay = min_log_loss_pos
         result["loss"] = min_log_loss
+        diff = result["loss"] - result["loss_pre_shift"]
+        if diff > 0:
+            raise TerminalException(
+                "Post-shift loss of {} is greater than pre-shift".format(result["loss"])
+            )
+
+        elif diff < -.06:
+            raise TerminalException(
+                "Post-shift delt loss of {} does not cross the threshold for alignment".format(diff)
+            )
 
         self.__LOGGER.info("[{}] Subtitle aligned".format(os.getpid()))
 
