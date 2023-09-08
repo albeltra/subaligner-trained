@@ -781,8 +781,10 @@ class Predictor(metaclass=Singleton):
 
         # train_data = np.array([np.rot90(val) for val in train_data])
         # train_data = train_data - np.mean(train_data, axis=0)
+        train_data = train_data[np.newaxis, ...] 
         result["time_load_dataset"] = str(datetime.datetime.now() - pred_start)
         result["X_shape"] = train_data.shape
+
 
         # Load neural network
         input_shape = (train_data.shape[1], train_data.shape[2])
@@ -858,7 +860,7 @@ class Predictor(metaclass=Singleton):
                 "Post-shift loss of {} is greater than pre-shift".format(result["loss"])
             )
 
-        elif diff > -.06: 
+        elif diff > -.06:
             raise TerminalException(
                 "Post-shift delt loss of {} does not cross the threshold for alignment".format(diff)
             )
