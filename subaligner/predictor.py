@@ -826,7 +826,7 @@ class Predictor(metaclass=Singleton):
 
         result["loss_pre_shift"] = log_loss(labels, voice_probabilities, eps=1 * 10 ** -5)
 
-        THRESH = .55
+        THRESH = .50 
         if result["loss_pre_shift"] < THRESH:
             raise TerminalException(
                 "Pre-shift loss of {} is < threshold of {}".format(result["loss_pre_shift"], THRESH)
